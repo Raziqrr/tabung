@@ -1,7 +1,7 @@
 /// @Author: Raziqrr rzqrdzn03@gmail.com
 /// @Date: 2024-08-20 12:37:30
 /// @LastEditors: Raziqrr rzqrdzn03@gmail.com
-/// @LastEditTime: 2024-08-21 22:39:05
+/// @LastEditTime: 2024-08-22 14:54:12
 /// @FilePath: lib/home.dart
 /// @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
 
@@ -27,6 +27,8 @@ class _HomePageState extends State<HomePage> {
       .orderBy('createdAt', descending: true)
       .snapshots();
 
+  List<String> categories = ["Successful", "Failed"];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -48,7 +50,7 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.white,
                   boxShadow: [BoxShadow(color: Colors.black, blurRadius: 10)]),
               padding: EdgeInsets.only(top: 50),
-              height: MediaQuery.of(context).size.height * 30 / 100,
+              height: MediaQuery.of(context).size.height * 32 / 100,
               alignment: Alignment.center,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -70,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                               fontWeight: FontWeight.w500,
                               color: Colors.blue.shade300),
                         ),
-                        GradientText("Tabung 1",
+                        GradientText("Fund Box",
                             style: GoogleFonts.montserrat(
                                 fontWeight: FontWeight.bold, fontSize: 38),
                             colors: [
@@ -78,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                               Colors.blue.shade900
                             ]),
                         SizedBox(
-                          height: 10,
+                          height: 20,
                         ),
                         Container(
                           padding: EdgeInsets.only(
@@ -117,13 +119,16 @@ class _HomePageState extends State<HomePage> {
                   );
                 }
 
-                final dataList = snapshot.data!.docs;
+                final dataList = snapshot.data!.docs.where((doc) {
+                  return categories.contains(doc["status"]);
+                }).toList();
+                final allList = snapshot.data!.docs;
                 final failedList = snapshot.data!.docs.where((doc) {
                   return doc["status"] == "Failed";
                 });
 
                 final failedNum = failedList.length;
-                final successNum = dataList.length - failedNum;
+                final successNum = allList.length - failedNum;
 
                 print(failedList.length);
                 print(dataList);
@@ -139,6 +144,13 @@ class _HomePageState extends State<HomePage> {
                       Text(
                         "Attempts",
                         style: GoogleFonts.montserrat(
+                            shadows: [
+                              Shadow(
+                                color: Colors.blue.withOpacity(0.4),
+                                blurRadius: 5,
+                                offset: Offset(0, 0),
+                              )
+                            ],
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
                             color: Colors.blue.shade900),
@@ -148,6 +160,12 @@ class _HomePageState extends State<HomePage> {
                       ),
                       Container(
                         decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black.withOpacity(0.7),
+                                  blurRadius: 7,
+                                  offset: Offset(0, 3))
+                            ],
                             borderRadius: BorderRadius.circular(10),
                             color: Colors.blue.shade900),
                         padding: EdgeInsets.only(top: 20, bottom: 20),
@@ -201,7 +219,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       SizedBox(
-                        height: 40,
+                        height: 50,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -210,6 +228,13 @@ class _HomePageState extends State<HomePage> {
                             CupertinoIcons.time,
                             color: Colors.blue.shade900,
                             weight: 10,
+                            shadows: [
+                              Shadow(
+                                color: Colors.blue.withOpacity(0.4),
+                                blurRadius: 5,
+                                offset: Offset(0, 0),
+                              )
+                            ],
                           ),
                           SizedBox(
                             width: 5,
@@ -217,9 +242,71 @@ class _HomePageState extends State<HomePage> {
                           Text(
                             "History",
                             style: GoogleFonts.montserrat(
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.blue.withOpacity(0.4),
+                                    blurRadius: 5,
+                                    offset: Offset(0, 0),
+                                  )
+                                ],
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.blue.shade900),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          RawChip(
+                            label: Text(
+                              "Successful",
+                              style: GoogleFonts.montserrat(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white),
+                            ),
+                            selected: categories.contains("Successful"),
+                            onPressed: () {
+                              if (categories.contains("Successful")) {
+                                categories.remove("Successful");
+                              } else {
+                                categories.add("Successful");
+                              }
+                              setState(() {});
+                            },
+                            backgroundColor: Colors.green.shade600,
+                            selectedColor: Colors.green.shade600,
+                            checkmarkColor: Colors.white,
+                            side: BorderSide.none,
+                            elevation: 3,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          RawChip(
+                            label: Text(
+                              "Failed",
+                              style: GoogleFonts.montserrat(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white),
+                            ),
+                            selected: categories.contains("Failed"),
+                            onPressed: () {
+                              if (categories.contains("Failed")) {
+                                categories.remove("Failed");
+                              } else {
+                                categories.add("Failed");
+                              }
+                              setState(() {});
+                            },
+                            backgroundColor: Colors.red,
+                            selectedColor: Colors.red,
+                            checkmarkColor: Colors.white,
+                            side: BorderSide.none,
+                            elevation: 3,
                           ),
                         ],
                       ),
@@ -251,17 +338,24 @@ class _HomePageState extends State<HomePage> {
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        "${newWeekday}, ${newDate}",
-                                        style: GoogleFonts.montserrat(
-                                            fontWeight: FontWeight.w800,
-                                            color: Colors.blue.shade900),
+                                      Container(
+                                        child: Text(
+                                          "${newWeekday}, ${newDate}",
+                                          style: GoogleFonts.montserrat(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w800,
+                                              color: Colors.blue.shade900),
+                                        ),
+                                        padding:
+                                            EdgeInsets.only(top: 4, bottom: 4),
                                       ),
                                       Text(
                                         "${newTimeSplitted[0]}:${newTimeSplitted[1]}",
@@ -272,20 +366,41 @@ class _HomePageState extends State<HomePage> {
                                       )
                                     ],
                                   ),
-                                  Container(
-                                    padding: EdgeInsets.only(
-                                        top: 4, bottom: 4, left: 20, right: 20),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: status == "Failed"
-                                            ? Colors.red
-                                            : Colors.green.shade600),
-                                    child: Text(
-                                      status,
-                                      style: GoogleFonts.montserrat(
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.white),
-                                    ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.only(
+                                            top: 4,
+                                            bottom: 4,
+                                            left: 20,
+                                            right: 20),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            color: status == "Failed"
+                                                ? Colors.red
+                                                : Colors.green.shade600),
+                                        child: Text(
+                                          status,
+                                          style: GoogleFonts.montserrat(
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      status == "Successful"
+                                          ? Text(
+                                              "By ${data["name"]}",
+                                              style: GoogleFonts.montserrat(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.blue.shade900),
+                                            )
+                                          : SizedBox()
+                                    ],
                                   )
                                 ],
                               ),
