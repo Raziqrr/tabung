@@ -2,8 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:tabung/home.dart';
-import 'package:tabung/test_home.dart';
+import 'package:intellisafe/home.dart';
+import 'package:intellisafe/test_home.dart';
 
 import 'firebase_options.dart';
 
